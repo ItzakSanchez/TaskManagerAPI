@@ -1,0 +1,91 @@
+TaskManagerAPI es una aplicación que permite a los usuarios gestionar proyectos y tareas. Cada proyecto puede tener múltiples tareas asociadas, y cada tarea puede tener un estado (pendiente, en progreso, completada). La aplicación debe exponer una REST API para crear, actualizar, consultar y eliminar proyectos y tareas. También debe contar con persistencia en base de datos y configuraciones ajustables según el perfil de Spring (dev, prod).
+
+Requerimientos funcionales
+1. Gestión de Proyectos
+Crear, leer, actualizar y eliminar proyectos (CRUD).
+
+Un proyecto tiene:
+
+id (Long)
+
+nombre (String)
+
+descripcion (String)
+
+fechaInicio (LocalDate)
+
+fechaFin (LocalDate)
+
+Los endpoints deben ser RESTful:
+
+GET /proyectos → lista todos los proyectos
+GET /proyectos/{id} → obtiene un proyecto por id
+POST /proyectos → crea un nuevo proyecto
+PUT /proyectos/{id} → actualiza un proyecto
+DELETE /proyectos/{id} → elimina un proyecto
+
+2. Gestión de Tareas
+Crear, leer, actualizar y eliminar tareas asociadas a proyectos.
+
+Una tarea tiene:
+
+id (Long)
+
+nombre (String)
+
+descripcion (String)
+
+estado (Enum: PENDIENTE, EN_PROGRESO, COMPLETADA)
+
+prioridad (Enum: BAJA, MEDIA, ALTA)
+
+proyecto (relación con Proyecto)
+
+Endpoints RESTful:
+
+GET /proyectos/{id}/tareas → lista tareas de un proyecto
+POST /proyectos/{id}/tareas → crea tarea en un proyecto
+PUT /tareas/{id} → actualiza tarea
+DELETE /tareas/{id} → elimina tarea
+
+3. Persistencia
+Utilizar Spring Data JPA con H2 en memoria para desarrollo y PostgreSQL/MySQL para producción.
+
+Modelos correctamente mapeados con relaciones (@OneToMany, @ManyToOne).
+
+Repositorios extendiendo JpaRepository.
+
+4. Configuración y perfiles
+Usar @Value para leer propiedades desde application.properties o application.yml.
+
+Definir perfiles: dev y prod.
+
+dev: H2 en memoria, logging más detallado, seed de datos iniciales.
+
+prod: Base de datos real (PostgreSQL/MySQL), logging reducido.
+
+Configuración de propiedades:
+
+Tiempo máximo de ejecución de tareas (task.max-duration)
+
+Valor por defecto de prioridad de nuevas tareas (task.default-priority)
+
+5. Validaciones y reglas de negocio
+No se puede crear una tarea con fecha de vencimiento anterior a la fecha de inicio del proyecto.
+
+El nombre de proyecto y tareas es obligatorio y único dentro del proyecto.
+
+Estado de la tarea solo puede ser uno de los valores del enum.
+
+Prioridad por defecto tomada de application.properties si no se especifica.
+
+6. Extras recomendados (para repasar temas avanzados)
+DTOs y mapeo con MapStruct o manual para separar entidad vs payload de API.
+
+Excepciones personalizadas (ProjectNotFoundException, TaskNotFoundException) y manejo global con @ControllerAdvice.
+
+Logs con slf4j.
+
+Tests unitarios y de integración con @SpringBootTest y @WebMvcTest.
+
+Swagger/OpenAPI para documentar la API.
